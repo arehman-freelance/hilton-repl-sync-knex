@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+
+  mariadb:
+    image: mariadb:10.6
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./shared:/shared        
+    ports:
+      - 3306:3306
+
+  oracledb:
+      #https://container-registry.oracle.com/ords/f?p=113:4:5028989745456:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:803,803,Oracle%20Database%20Express%20Edition,Oracle%20Database%20Express%20Edition,1,0&cs=3RES5iNU_1-BshYRdrXSJhZMWf_t80J8Tvpqc7V6CkuDrIz7tsDjpyd_SmxbfstXLMi0vYFc37xXsjLAL5FJijg
+      image: container-registry.oracle.com/database/express:21.3.0-xe
+      environment:
+        ORACLE_PWD: 123
+      volumes:
+        - ./oracle:/opt/oracle/oradata
+        - ./shared://home/oracle/shared:rw
+      ports:
+        - "1521:1521"
+        - "5500:5500"        
+
+  sync:
+    # image: hiltonsyncknex
+    build: .
+    # image: node:18.2-bullseye
+    # command: npm run start
+    command: >
+        sh -c "sleep infinity"            
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+      - ./shared:/shared              
+    # ports:
+    #   - "5000:5000"
+    depends_on:
+      - mariadb
+      - oracledb
+
