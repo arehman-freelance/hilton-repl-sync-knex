@@ -1,7 +1,7 @@
-const conn = require('../db/connections');
+const conn = require('./connections');
 
 
-dynamic_sync = async(tbl_name, pk_cols) => {
+exports.dynamic_sync = async(tbl_name, pk_cols) => {
     let src_tbl_list = await conn.knex_oracle(tbl_name).where({IS_UPLOAD: 'N'});
 
     src_tbl_list.forEach(async src_tbl => {
@@ -17,12 +17,6 @@ dynamic_sync = async(tbl_name, pk_cols) => {
 
     console.log(`${tbl_name} synced successfully.`)
 }
-
-
-exports.sync_company = async() => {
-    dynamic_sync('COMPANY', ['COMP_CODE'])
-}
-
 
 
 // original upsert code

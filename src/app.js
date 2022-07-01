@@ -1,4 +1,4 @@
-const company = require('./sync/company');
+const company = require('./sync/setups');
 
 company.sync_company();
 
