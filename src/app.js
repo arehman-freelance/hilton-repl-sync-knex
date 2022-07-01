@@ -1,5 +1,5 @@
-const company = require('./sync/setups');
+const company = require('./sync/orcl_to_mdb');
 
-company.sync_company();
+company.sync_setups();
 
   

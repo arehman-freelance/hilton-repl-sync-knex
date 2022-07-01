@@ -1,11 +1,11 @@
 const conn = require('./connections');
 
 
-exports.dynamic_sync = async(tbl_name, pk_cols) => {
+exports.sync_orcl_to_mdb = async(tbl_name, pk_cols) => {
     let src_tbl_list = await conn.knex_oracle(tbl_name).where({IS_UPLOAD: 'N'});
 
     src_tbl_list.forEach(async src_tbl => {
-        await conn.knex_mariadb(tbl_name).insert(src_tbl).onConflict().merge(src_tbl);
+        await conn.knex_mariadb(tbl_name).insert(src_tbl).onConflict().merge();
 
         let pk_obj = {};
         pk_cols.forEach(col => {
