@@ -1,7 +1,7 @@
 const conn = require('../db/connections');
 
 
-default_sync = async(tbl_name, pk_cols) => {
+dynamic_sync = async(tbl_name, pk_cols) => {
     let src_tbl_list = await conn.knex_oracle(tbl_name).where({IS_UPLOAD: 'N'});
 
     src_tbl_list.forEach(async src_tbl => {
@@ -20,7 +20,7 @@ default_sync = async(tbl_name, pk_cols) => {
 
 
 exports.sync_company = async() => {
-    default_sync('COMPANY', ['COMP_CODE'])
+    dynamic_sync('COMPANY', ['COMP_CODE'])
 }
 
 
