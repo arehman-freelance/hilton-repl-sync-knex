@@ -1,0 +1,9 @@
+hello test document
+004 = company code
+INVOICE = document type
+4000009095 = sap code
+20 = year
+12 = month
+16 = date
+92011187 = doc number
+txt = extension

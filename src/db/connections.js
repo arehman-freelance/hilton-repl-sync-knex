@@ -6,7 +6,7 @@ exports.knex_mariadb = knex({
       host: 'mariadb',
       user: 'root',
       password: '123',
-      database: 'HILTON'
+      database: 'hilton_farrukh'
     },
     pool: { min: 0, max: 7 }
   });

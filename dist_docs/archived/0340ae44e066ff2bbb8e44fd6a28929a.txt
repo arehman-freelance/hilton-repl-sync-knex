@@ -1,0 +1,10 @@
+1. readfiles from the current data folder
+2. check type should be file
+3. loop files
+4. split file name by _
+5. create object from splits
+6. get missing pieces by db query for dist_doc insertion
+7. also create md5 hash form full file name concat with date.now to generate new file name
+8. insert into dist_doc
+9. move file from current to archived
+10. on exception remove that record from db
