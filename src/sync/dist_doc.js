@@ -15,20 +15,8 @@ exports.sync_dist_doc = () => {
         //listing all files using forEach
         files.forEach((file) => {
             if (!!path.extname(file)) {
-                let obj = split_file(file);
-                get_dist_code(obj.comp_code, obj.sapcode).then((dist_code) => {
-                    obj.dist = dist_code;
-                    insert_dist_docs(obj).then((v) => {
-                        let old_path = path.join(gen_conf.distCurrFilePath, file);
-                        let new_path = obj.file_url;
-                        fs.rename(old_path, new_path, (err) => {
-                            if (err) {
-                                console.log(err)
-                            }
-                        });
-                        console.log("file moved successfully")
-                    })
-                });
+
+                insert_dist_docs(file);
             }
         });
     });
@@ -58,26 +46,31 @@ split_file = (file_name) => {
     }
 }
 
-get_dist_code = (comp_code, sapcode) => {
-    return conn.knex_mariadb('DISTRIBUTOR').where({ comp_code, sapcode }).limit(1).then((dist_list) => {
-        let dist_code = -1;
-        dist_list.forEach(dist => {
-            dist_code = dist.CODE;
-        });
+insert_dist_docs = async (file) => {
 
-        return dist_code;
+    let dist_docs = split_file(file);
 
+    let comp_code = dist_docs.comp_code; 
+    let sapcode = dist_docs.sapcode;
+
+    let dist_list = await conn.knex_mariadb('DISTRIBUTOR').where({ comp_code, sapcode }).limit(1);
+    dist_list.forEach(dist => {
+        dist_docs.dist = dist.CODE;
     });
-}
 
-insert_dist_docs = (obj) => {
-
-    let dist_docs = { ...obj }
     delete dist_docs.hash;
     delete dist_docs.sapcode;
 
-    return conn.knex_mariadb('DISTRIBUTORDOCS').insert(dist_docs).then((v) => {
-        return v;
 
+    await conn.knex_mariadb('DISTRIBUTORDOCS').insert(dist_docs);
+
+    let old_path = path.join(gen_conf.distCurrFilePath, file);
+    let new_path = dist_docs.file_url;
+    fs.rename(old_path, new_path, (err) => {
+        if (err) {
+            console.log(err)
+        }
     });
+    console.log("file moved successfully")
+
 }
