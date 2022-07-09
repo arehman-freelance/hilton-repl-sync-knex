@@ -32,17 +32,17 @@ split_file = (file_name) => {
     let hash = gen_hash(file_name);
 
     return {
-        comp_code: file_name_splits[0],
-        doc_type: file_name_splits[1],
-        sapcode: file_name_splits[2],
-        year: file_name_splits[3],
-        mon: file_name_splits[4],
-        day: file_name_splits[5],
-        doc_number: file_name_splits[6],
-        file_type: ext_split[1],
-        hash: hash,
-        file_name: file_name,
-        file_url: path.join(gen_conf.distArchFilePath, hash + '.' + ext_split[1])
+        COMP_CODE: file_name_splits[0],
+        DOC_TYPE: file_name_splits[1],
+        SAPCODE: file_name_splits[2],
+        YEAR: file_name_splits[3],
+        MON: file_name_splits[4],
+        DAY: file_name_splits[5],
+        DOC_NUMBER: file_name_splits[6],
+        FILE_TYPE: ext_split[1],
+        HASH: hash,
+        FILE_NAME: file_name,
+        FILE_URL: path.join(gen_conf.distArchFilePath, hash + '.' + ext_split[1])
     }
 }
 
@@ -50,22 +50,22 @@ insert_dist_docs = async (file) => {
 
     let dist_docs = split_file(file);
 
-    let comp_code = dist_docs.comp_code; 
-    let sapcode = dist_docs.sapcode;
+    let COMP_CODE = dist_docs.COMP_CODE; 
+    let SAPCODE = dist_docs.SAPCODE;
 
-    let dist_list = await conn.knex_mariadb('DISTRIBUTOR').where({ comp_code, sapcode }).limit(1);
+    let dist_list = await conn.knex_oracle('DISTRIBUTOR').where({ COMP_CODE, SAPCODE }).limit(1);
     dist_list.forEach(dist => {
-        dist_docs.dist = dist.CODE;
+        dist_docs.DIST = dist.CODE;
     });
 
-    delete dist_docs.hash;
-    delete dist_docs.sapcode;
+    delete dist_docs.HASH;
+    delete dist_docs.SAPCODE;
 
 
-    await conn.knex_mariadb('DISTRIBUTORDOCS').insert(dist_docs);
+    await conn.knex_oracle('DISTRIBUTORDOCS').insert(dist_docs);
 
     let old_path = path.join(gen_conf.distCurrFilePath, file);
-    let new_path = dist_docs.file_url;
+    let new_path = dist_docs.FILE_URL;
     fs.rename(old_path, new_path, (err) => {
         if (err) {
             console.log(err)
