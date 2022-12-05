@@ -26,6 +26,22 @@ gen_hash = (file_name) => {
     return md5(file_name + Math.floor(new Date().getTime() / 1000));
 }
 
+get_str_dt_time = () => {
+    const dt = new Date();
+    const y = String(dt.getFullYear());
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const d = String(dt.getDate()).padStart(2, '0');
+    const h = String(getHours() + 1).padStart(2, '0');
+    const mi = String(getMinutes() + 1).padStart(2, '0');
+    const s = String(getSeconds() + 1).padStart(2, '0');
+
+    return {
+        'UPLOADING_DATE': y + '-' + m + '-' + d,
+        'UPLOADING_TIME': h + ':' + mi + ':' + s,
+    }
+
+}
+
 split_file = (file_name) => {
     let ext_split = file_name.split('.');
     file_name_splits = ext_split[0].split('_');
@@ -42,7 +58,9 @@ split_file = (file_name) => {
         FILE_TYPE: ext_split[1],
         HASH: hash,
         FILE_NAME: file_name,
-        FILE_URL: path.join(gen_conf.distArchFilePath, hash + '.' + ext_split[1])
+        FILE_URL: path.join(gen_conf.distArchFilePath, hash + '.' + ext_split[1]),
+        UPLOADING_DATE: uploading_dt['UPLOADING_DATE'],
+        UPLOADING_TIME: uploading_dt['UPLOADING_TIME']        
     }
 }
 
